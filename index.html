@@ -1,0 +1,455 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#100b1c">
+<title>KassssetA</title>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<style>
+:root {
+  --bg: #100b1b;
+  --card: #1b1629;
+  --purple: #883cff;
+  --light: #b995ff;
+  --text: #ffffff;
+  --muted: #aaa0c4;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 50% 0%, #38205c 0%, transparent 42%),
+    var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Arial, sans-serif;
+}
+
+button, input {
+  font: inherit;
+}
+
+.app {
+  width: 100%;
+  max-width: 480px;
+  margin: auto;
+  padding: 20px 19px 35px;
+}
+
+.hero {
+  text-align: center;
+  padding: 15px 0 28px;
+}
+
+.snake {
+  width: 100%;
+  max-width: 310px;
+  height: 190px;
+  margin: 0 auto 8px;
+  filter: drop-shadow(0 0 18px #873cff88);
+}
+
+h1 {
+  font-size: 38px;
+  font-weight: 850;
+  letter-spacing: -1.5px;
+  margin: 5px 0;
+}
+
+h1 span {
+  color: var(--purple);
+}
+
+.tagline {
+  color: var(--muted);
+  font-size: 15px;
+  margin: 9px 0 0;
+}
+
+.line {
+  height: 2px;
+  width: 75%;
+  margin: 20px auto;
+  background: linear-gradient(
+    90deg, transparent, var(--purple), transparent
+  );
+}
+
+.card {
+  background: linear-gradient(145deg, #211a33, #15111f);
+  border: 1px solid #49336b;
+  border-radius: 23px;
+  padding: 21px;
+  margin-bottom: 17px;
+  box-shadow: 0 12px 35px #00000030;
+}
+
+.card-heading {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.card-icon {
+  font-size: 38px;
+  filter: drop-shadow(0 0 8px #8b3cff);
+}
+
+.card h2 {
+  font-size: 19px;
+  margin: 0 0 7px;
+}
+
+.card p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+button {
+  width: 100%;
+  padding: 16px;
+  margin-top: 18px;
+  border: 0;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 16px;
+  color: white;
+  cursor: pointer;
+  transition: transform .15s, opacity .15s;
+}
+
+button:active {
+  transform: scale(.98);
+  opacity: .85;
+}
+
+.primary {
+  background: linear-gradient(110deg, #a13cff, #6724df);
+  box-shadow: 0 5px 20px #873cff55;
+}
+
+.secondary {
+  background: #302448;
+  border: 1px solid #554075;
+}
+
+input {
+  width: 100%;
+  padding: 16px;
+  margin-top: 19px;
+  border-radius: 13px;
+  background: #100d19;
+  border: 1px solid #51406e;
+  color: white;
+  font-size: 16px;
+  outline: none;
+}
+
+input:focus {
+  border-color: var(--purple);
+}
+
+input::placeholder {
+  color: #84799d;
+}
+
+.footer {
+  color: #89809f;
+  font-size: 13px;
+  text-align: center;
+  margin-top: 28px;
+  line-height: 1.8;
+}
+
+#room {
+  display: none;
+  padding-top: 35px;
+}
+
+.room-title {
+  text-align: center;
+  font-size: 27px;
+}
+
+.room-panel {
+  background: var(--card);
+  border: 1px solid #49336b;
+  border-radius: 20px;
+  padding: 24px;
+  margin-top: 25px;
+  text-align: center;
+}
+
+.room-code {
+  color: var(--light);
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: 7px;
+  margin: 25px 0;
+}
+
+.people {
+  color: var(--muted);
+  margin: 20px 0;
+}
+
+.status {
+  color: #c6a7ff;
+  font-size: 13px;
+  text-align: center;
+  margin-top: 15px;
+  line-height: 1.5;
+}
+
+.hidden {
+  display: none !important;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- ГЛАВНЫЙ ЭКРАН -->
+
+<div id="home">
+
+  <header class="hero">
+
+    <!-- ФИОЛЕТОВАЯ ЗМЕЯ -->
+    <svg class="snake" viewBox="0 0 320 200"
+         xmlns="http://www.w3.org/2000/svg">
+
+      <defs>
+        <linearGradient id="snakeColor"
+          x1="0" y1="0" x2="1" y2="1">
+          <stop stop-color="#d7b5ff"/>
+          <stop offset=".45" stop-color="#873cff"/>
+          <stop offset="1" stop-color="#30105e"/>
+        </linearGradient>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="5"/>
+        </filter>
+      </defs>
+
+      <path d="M65 155
+        C12 115 55 36 137 47
+        C222 58 278 142 214 169
+        C164 191 81 162 112 111
+        C132 78 197 86 211 116"
+        fill="none" stroke="#873cff"
+        stroke-width="37" stroke-linecap="round"
+        opacity=".4" filter="url(#glow)"/>
+
+      <path d="M65 155
+        C12 115 55 36 137 47
+        C222 58 278 142 214 169
+        C164 191 81 162 112 111
+        C132 78 197 86 211 116"
+        fill="none" stroke="url(#snakeColor)"
+        stroke-width="30" stroke-linecap="round"/>
+
+      <path d="M65 155
+        C12 115 55 36 137 47
+        C222 58 278 142 214 169
+        C164 191 81 162 112 111
+        C132 78 197 86 211 116"
+        fill="none" stroke="#e0c7ff"
+        stroke-width="2" stroke-dasharray="4 9"
+        opacity=".65"/>
+
+      <path d="M211 116
+        C226 86 258 77 271 95
+        C285 113 269 137 247 137
+        L226 129"
+        fill="url(#snakeColor)"
+        stroke="#c89aff" stroke-width="2"/>
+
+      <circle cx="257" cy="105" r="4" fill="#fff"/>
+      <circle cx="258" cy="105" r="2" fill="#190b2b"/>
+      <path d="M270 128 Q282 132 288 126"
+        fill="none" stroke="#e9b2ff"
+        stroke-width="2" stroke-linecap="round"/>
+
+      <path d="M285 126 L297 136 M285 126 L290 140"
+        stroke="#ff72c9" stroke-width="2"
+        stroke-linecap="round"/>
+
+      <path d="M155 19 L165 5 L175 19"
+        stroke="#b78aff" stroke-width="3"
+        fill="none" stroke-linecap="round"/>
+
+      <circle cx="165" cy="5" r="3" fill="#fff"/>
+    </svg>
+
+    <h1>Kasssset<span>A</span></h1>
+    <p class="tagline">Смотри вместе. Где угодно.</p>
+
+  </header>
+
+  <div class="line"></div>
+
+  <section class="card">
+    <div class="card-heading">
+      <div class="card-icon">🎬</div>
+      <div>
+        <h2>Создать комнату</h2>
+        <p>Создай свою комнату и пригласи от 1 до 4 друзей.</p>
+      </div>
+    </div>
+
+    <button class="primary" onclick="createRoom()">
+      ＋ Создать комнату
+    </button>
+  </section>
+
+  <section class="card">
+    <div class="card-heading">
+      <div class="card-icon">🔗</div>
+      <div>
+        <h2>Присоединиться</h2>
+        <p>Введи код комнаты, чтобы смотреть видео вместе.</p>
+      </div>
+    </div>
+
+    <input id="roomInput"
+      type="text"
+      placeholder="Введи код комнаты"
+      maxlength="6"
+      autocomplete="off">
+
+    <button class="secondary" onclick="joinRoom()">
+      ⇥ Присоединиться
+    </button>
+  </section>
+
+  <div id="message" class="status"></div>
+
+  <div class="footer">
+    ━━━━━━━━━ ▶ ━━━━━━━━━<br>
+    KassssetA © 2026<br>
+    Совместный просмотр видео
+  </div>
+
+</div>
+
+<!-- ЭКРАН КОМНАТЫ -->
+
+<div id="room">
+
+  <h2 class="room-title">🎬 Твоя комната</h2>
+
+  <div class="room-panel">
+
+    <p>Код приглашения</p>
+
+    <div class="room-code" id="roomCode">------</div>
+
+    <button class="primary" onclick="copyCode()">
+      Скопировать код
+    </button>
+
+    <div class="people" id="people">
+      👤 1 / 5 участников
+    </div>
+
+    <p class="status">
+      Пригласи до четырёх друзей!
+    </p>
+
+  </div>
+
+  <button class="secondary" onclick="goHome()">
+    ← Вернуться на главную
+  </button>
+
+  <div class="status" id="roomMessage">
+    Демонстрационная комната.
+    Подключение сервера добавим следующим этапом.
+  </div>
+
+</div>
+
+</div>
+
+<script>
+const tg = window.Telegram?.WebApp;
+
+if (tg) {
+  tg.ready();
+  tg.expand();
+  tg.setHeaderColor("#100b1b");
+  tg.setBackgroundColor("#100b1b");
+}
+
+let currentCode = "";
+
+function createRoom() {
+  currentCode = Math.random()
+    .toString(36)
+    .substring(2, 8)
+    .toUpperCase();
+
+  document.getElementById("home").classList.add("hidden");
+  document.getElementById("room").style.display = "block";
+
+  document.getElementById("roomCode").textContent =
+    currentCode;
+
+  document.getElementById("people").textContent =
+    "👤 1 / 5 участников";
+
+  document.getElementById("roomMessage").textContent =
+    "Демонстрационная комната. Настоящие приглашения подключим через сервер.";
+
+  window.scrollTo(0, 0);
+}
+
+function joinRoom() {
+  const code = document.getElementById("roomInput")
+    .value.trim().toUpperCase();
+
+  const message = document.getElementById("message");
+
+  if (!/^[A-Z0-9]{6}$/.test(code)) {
+    message.textContent =
+      "Введите шестизначный код комнаты.";
+    return;
+  }
+
+  message.textContent =
+    "Сервер пока не подключён. Проверка комнаты появится на следующем этапе.";
+}
+
+async function copyCode() {
+  try {
+    await navigator.clipboard.writeText(currentCode);
+    document.getElementById("roomMessage").textContent =
+      "Код скопирован!";
+  } catch (error) {
+    document.getElementById("roomMessage").textContent =
+      "Не удалось скопировать. Запиши код: " + currentCode;
+  }
+}
+
+function goHome() {
+  document.getElementById("room").style.display = "none";
+  document.getElementById("home").classList.remove("hidden");
+  window.scrollTo(0, 0);
+}
+</script>
+
+</body>
+</html>
