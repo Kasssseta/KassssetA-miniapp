@@ -462,8 +462,52 @@ const supabaseClient = window.supabase.createClient(
   SUPABASE_KEY
 );
 
-alert("Supabase подключён!");
+let telegramUser = null;
 
+async function authenticateTelegram() {
+  const telegramApp = window.Telegram?.WebApp;
+  const initData = telegramApp?.initData;
+
+  const message = document.getElementById("message");
+
+  if (!initData) {
+    message.textContent =
+      "Открой KassssetA через Telegram.";
+    return;
+  }
+
+  message.textContent = "Проверяем авторизацию...";
+
+  const { data, error } =
+    await supabaseClient.functions.invoke(
+      "telegram-auth",
+      {
+        body: { initData }
+      }
+    );
+
+  if (error) {
+    console.error("Ошибка авторизации:", error);
+    message.textContent =
+      "Не удалось выполнить авторизацию.";
+    return;
+  }
+
+  if (!data?.authenticated || !data?.user?.id) {
+    message.textContent =
+      "Telegram не подтвердил авторизацию.";
+    return;
+  }
+
+  telegramUser = data.user;
+
+  message.textContent =
+    "Вы вошли как " +
+    (telegramUser.first_name || telegramUser.username || "пользователь");
+}
+
+authenticateTelegram();
+  
 </script>
 </body>
 </html>
