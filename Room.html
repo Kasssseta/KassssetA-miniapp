@@ -1,0 +1,322 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KassssetA — Комната</title>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #100b19;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.header {
+  height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  background: #1b1228;
+  border-bottom: 1px solid #38234d;
+}
+
+.logo {
+  color: #c18aff;
+  font-size: 21px;
+  font-weight: bold;
+}
+
+.room-code {
+  color: #c8b6d8;
+  font-size: 13px;
+}
+
+.main {
+  padding: 12px;
+}
+
+.player {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #08060c;
+  border: 1px solid #573477;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: #bda1d5;
+}
+
+.play {
+  font-size: 48px;
+  color: #c18aff;
+}
+
+.player p {
+  font-size: 13px;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  gap: 8px;
+}
+
+button {
+  border: none;
+  border-radius: 9px;
+  padding: 11px 15px;
+  background: #7139a3;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:active {
+  opacity: .7;
+}
+
+.participants {
+  display: flex;
+  gap: 9px;
+  margin: 18px 0;
+  overflow-x: auto;
+}
+
+.person {
+  background: #21162e;
+  border: 1px solid #49305e;
+  padding: 10px 13px;
+  border-radius: 12px;
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+.chat {
+  background: #1b1228;
+  border: 1px solid #38234d;
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.chat-title {
+  font-weight: bold;
+  color: #d3aaff;
+  margin-bottom: 12px;
+}
+
+.messages {
+  height: 190px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.message {
+  background: #2a1b3a;
+  border-radius: 9px;
+  padding: 9px;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.message strong {
+  color: #c18aff;
+}
+
+.send {
+  display: flex;
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.send input {
+  min-width: 0;
+  flex: 1;
+  background: #100b19;
+  border: 1px solid #49305e;
+  border-radius: 9px;
+  padding: 11px;
+  color: white;
+  outline: none;
+}
+
+#chatToggle {
+  display: none;
+}
+
+/* Горизонтальный экран */
+@media (orientation: landscape) and (max-height: 600px) {
+  .main {
+    height: calc(100dvh - 55px);
+    display: flex;
+    padding: 10px;
+    gap: 12px;
+  }
+
+  .video-area {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .player {
+    flex: 1;
+    min-height: 0;
+    aspect-ratio: auto;
+  }
+
+  .participants {
+    margin: 10px 0 0;
+  }
+
+  #chatToggle {
+    display: block;
+  }
+
+  .chat {
+    display: none;
+    width: min(320px, 42vw);
+    flex-shrink: 0;
+  }
+
+  .chat.open {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .messages {
+    flex: 1;
+    min-height: 0;
+  }
+}
+
+@media (orientation: portrait) {
+  .main {
+    padding-bottom: 20px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+  <div class="logo">KassssetA</div>
+  <div class="room-code">Комната: <strong>DEMO01</strong></div>
+</header>
+
+<main class="main">
+
+  <section class="video-area">
+
+    <div class="player">
+      <div class="play">▶</div>
+      <p>Здесь будет видеоплеер</p>
+    </div>
+
+    <div class="controls">
+      <span>Участники: 1/5</span>
+      <button id="chatToggle" onclick="toggleChat()">
+        Открыть чат
+      </button>
+      <button onclick="invite()">Пригласить</button>
+    </div>
+
+    <div class="participants">
+      <div class="person">👑 Создатель</div>
+      <div class="person">Свободное место</div>
+      <div class="person">Свободное место</div>
+    </div>
+
+  </section>
+
+  <section class="chat" id="chat">
+    <div class="chat-title">💬 Общий чат</div>
+
+    <div class="messages" id="messages">
+      <div class="message">
+        <strong>KassssetA:</strong><br>
+        Добро пожаловать в комнату!
+      </div>
+    </div>
+
+    <form class="send" id="sendForm">
+      <input id="messageInput"
+        placeholder="Написать сообщение..."
+        autocomplete="off">
+      <button type="submit">➤</button>
+    </form>
+  </section>
+
+</main>
+
+<script>
+const tg = window.Telegram?.WebApp;
+tg?.ready();
+tg?.expand();
+
+function toggleChat() {
+  const chat = document.getElementById("chat");
+  const button = document.getElementById("chatToggle");
+
+  chat.classList.toggle("open");
+
+  button.textContent = chat.classList.contains("open")
+    ? "Закрыть чат"
+    : "Открыть чат";
+}
+
+function invite() {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText("DEMO01")
+      .then(() => alert("Код комнаты скопирован"));
+  } else {
+    alert("Код комнаты: DEMO01");
+  }
+}
+
+document.getElementById("sendForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const input = document.getElementById("messageInput");
+  const value = input.value.trim();
+
+  if (!value) return;
+
+  const message = document.createElement("div");
+  message.className = "message";
+
+  const author = document.createElement("strong");
+  author.textContent = "Ты:";
+
+  message.appendChild(author);
+  message.appendChild(document.createElement("br"));
+  message.appendChild(document.createTextNode(value));
+
+  document.getElementById("messages").appendChild(message);
+
+  input.value = "";
+
+  const messages = document.getElementById("messages");
+  messages.scrollTop = messages.scrollHeight;
+});
+</script>
+
+</body>
+</html>
