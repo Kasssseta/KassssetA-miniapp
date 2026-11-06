@@ -438,6 +438,8 @@ async function copyCode() {
     document.getElementById("roomMessage").textContent =
       "Код скопирован!";
   } catch (error) {
+
+    
     document.getElementById("roomMessage").textContent =
       "Не удалось скопировать. Запиши код: " + currentCode;
   }
@@ -461,31 +463,7 @@ const supabaseClient = window.supabase.createClient(
 );
 
 console.log("KassssetA: Supabase подключён!");
-</script>
-<script>
-  const tg = window.Telegram?.WebApp;
-  alert("ТЕСТ KASSSSETA ЗАПУЩЕН");
-    console.log("KASSSSETA TEST", !!tg);
 
-  if (tg) {
-    tg.ready();
-
-    const user = tg.initDataUnsafe?.user;
-
-    if (user) {
-      alert(
-        "Telegram подключён!\n\n" +
-        "ID: " + user.id + "\n" +
-        "Имя: " + user.first_name + "\n" +
-        "Username: @" + (user.username || "не указан") + "\n" +
-        "Язык: " + (user.language_code || "не указан")
-      );
-    } else {
-      alert("Telegram открыт, но данные пользователя не получены.");
-    }
-  } else {
-    alert("Telegram WebApp API не найден.");
-  }
 </script>
 </body>
 </html>
