@@ -465,4 +465,27 @@ const supabaseClient = window.supabase.createClient(
 console.log("KassssetA: Supabase подключён!");
 </script>
 </body>
+  <script>
+  const tg = window.Telegram?.WebApp;
+
+  if (tg) {
+    tg.ready();
+
+    const user = tg.initDataUnsafe?.user;
+
+    if (user) {
+      alert(
+        "Telegram подключён!\n\n" +
+        "ID: " + user.id + "\n" +
+        "Имя: " + user.first_name + "\n" +
+        "Username: @" + (user.username || "не указан") + "\n" +
+        "Язык: " + (user.language_code || "не указан")
+      );
+    } else {
+      alert("Telegram открыт, но данные пользователя не получены.");
+    }
+  } else {
+    alert("Telegram WebApp API не найден.");
+  }
+</script>
 </html>
