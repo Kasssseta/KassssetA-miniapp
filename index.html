@@ -486,12 +486,12 @@ async function authenticateTelegram() {
       }
     );
 
-  if (error) {
-    console.error("Ошибка авторизации:", error);
-    message.textContent =
-      "Не удалось выполнить авторизацию.";
-    return;
-  }
+ if (error) {
+  console.error("Ошибка авторизации:", error);
+  message.textContent =
+    "Ошибка: " + error.message;
+  return;
+}
 
   if (!data?.authenticated || !data?.user?.id) {
     message.textContent =
