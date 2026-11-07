@@ -486,10 +486,21 @@ async function authenticateTelegram() {
       }
     );
 
- if (error) {
+if (error) {
   console.error("Ошибка авторизации:", error);
-  message.textContent =
-    "Ошибка: " + error.message;
+
+  let details = error.message;
+
+  if (error.context) {
+    try {
+      const body = await error.context.json();
+      details = body.error || body.message || JSON.stringify(body);
+    } catch (e) {
+      details = error.message;
+    }
+  }
+
+  message.textContent = "Ошибка: " + details;
   return;
 }
 
